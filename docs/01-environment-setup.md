@@ -53,21 +53,24 @@ This will bring you back to the CloudFormation console. You can refresh the page
 
  You will get an email from SNS asking you to confirm the Subscription. **Confirm the subscription** so you can receive email alerts from AWS services during the workshop. The email may take 2-3 minutes to arrive, check your spam/junk folder if it doesn’t arrive within that timeframe.
 
-## Setup Amazon CloudWatch event rules and automatic response
+## Setup Amazon Eventbridge event rules and automatic response
 
 The CloudFormation template you just ran created <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/WhatIsCloudWatchEvents.html" target="_blank">CloudWatch Event Rules</a> for alerting and response purposes. The steps below will walk you through creating the final rule.  After this you'll have rules in place to receive email notifications and trigger AWS Lambda functions to respond to threats.
 
 Below are steps to create a rule through the console but you can also find out more about doing it programmatically by reviewing the <a href="http://docs.aws.amazon.com/guardduty/latest/ug/guardduty_findings_cloudwatch.html" target="_blank">Amazon GuardDuty Documentation</a>.
 
-1.	Open the <a href="https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2" target="_blank">CloudWatch console</a> (us-west-2)
+1.	Open the <a href="https://us-west-2.console.aws.amazon.com/events/home?region=us-west-2#/rules" target="_blank">Eventbridge console</a> (us-west-2)
 2.	In the navigation pane on the left, under **Events**, click **Rules**
 
 	!!! question "What are the current Rules in place setup to do?"
 	
 3.	Click **Create Rule**
 
-4.	Select **Event Pattern** click the dropdown labeled **Build event pattern to match events by service** and 
-select **Custom event pattern** in the drop down.
+4.	On the **Define rule detail** screen fill out the **Name** and **Description** (suggestions below).
+    * Name: **threat-detection-wksp-guardduty-finding-ec2-maliciousip**
+    * Description: **GuardDuty Finding: UnauthorizedAccess:EC2/MaliciousIPCaller.Custom**
+
+5. Click next and scroll to the **Event Pattern** section. Click **Custom patterns (JSON editor)**.
 
 Copy and paste in the custom event pattern below:
 	
@@ -84,12 +87,9 @@ Copy and paste in the custom event pattern below:
 }
 ```
 	
-5. For *Targets*, click **Add Target**, select **Lambda Function**, and then select **threat-detection-wksp-remediation-nacl**. 
-Click **Configure details** at the bottom.
+6. Click next and for *select target*, select **Lambda Function**, and then select **threat-detection-wksp-remediation-nacl**. 
+Click **Next** at the bottom ad then **Next** again.
 
-6.	On the **Configure rule details** screen fill out the **Name** and **Description** (suggestions below).
-    * Name: **threat-detection-wksp-guardduty-finding-ec2-maliciousip**
-    * Description: **GuardDuty Finding: UnauthorizedAccess:EC2/MaliciousIPCaller.Custom**
 7. Click **Create rule**.
 **Optional:** Consider examining the Lambda function to see what it does.  Open the <a href="https://us-west-2.console.aws.amazon.com/lambda/home?region=us-west-2" target="_blank">Lambda console</a>. Click on the function named **threat-detection-wksp-remediation-nacl**
 
